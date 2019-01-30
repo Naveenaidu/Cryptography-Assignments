@@ -1,0 +1,1 @@
+As a data scientist, you'll surely work with a lot of data! You will receive this data from multiple sources, from databases, from Excel to flat files. You will need to know how to open, read and write data into a flat files so that you can perform analyses on them
