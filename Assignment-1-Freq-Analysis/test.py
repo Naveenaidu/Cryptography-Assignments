@@ -48,35 +48,37 @@ def count_chars(cipher_file):
 
 	"""
 
-	alphabets_count = {'a':0, 'b':0, 'c':0, 'd':0, 'e':0,
-	                  'f':0, 'g':0, 'h':0, 'i':0, 'j':0,
-	                  'k':0, 'l':0, 'm':0, 'n':0, 'o':0,
-	                  'p':0, 'q':0, 'r':0, 's':0, 't':0,
-	                  'u':0, 'v':0, 'w':0, 'x':0, 'y':0,
-	                  'z':0}
+	alphabets_count = {'A':0, 'B':0, 'C':0, 'D':0, 'E':0,
+	                  'F':0, 'G':0, 'H':0, 'I':0, 'J':0,
+	                  'K':0, 'L':0, 'M':0, 'N':0, 'O':0,
+	                  'P':0, 'Q':0, 'R':0, 'S':0, 'T':0,
+	                  'U':0, 'V':0, 'W':0, 'X':0, 'Y':0,
+	                  'Z':0}
 
 	while True:
 		ch = cipher_file.read(1) #Reading file char by char
 		if not ch:
-			cipher_file.close()
 			break
 		try:
-			ch = ch.lower()
-			alphabets_count[ch] = alphabets_count[ch] + 1
+			alphabets_count[ch]+= 1
 		except:
 			continue
 
-	return(alphabets_count)		
+	return(alphabets_count)
+
+def count_digraphs(cipher_file):
+	return	
 
 
 def main():
 	
-	input_file = open("plain.txt","r")
-	output_file = open("cipher.txt","w")
-    monolithic_subtitution(input_file,output_file)
-	
+	input_file = open("plain.txt", "r")
+	output_file = open("cipher.txt", "w")
+	monolithic_subtitution(input_file, output_file)
+
 	cipher_file = open("cipher.txt","r")
-	alphabets_count = count_chars(cipher_file)	             
+	cipher_alphabets_count = count_chars(cipher_file)
+	print(cipher_alphabets_count)	             
 	            
 if __name__ == '__main__':
 	main()
