@@ -1,4 +1,5 @@
 import re
+from operator import itemgetter
 
 def monolithic_subtitution(input_file,output_file):
 	"""
@@ -37,37 +38,9 @@ def monolithic_subtitution(input_file,output_file):
 		except:
 			continue	
 
-def count_chars(cipher_file):
+def count_occurences(text,length):
 	"""
-	Counts the occurences of each letter in the cipher text
-
-	param:
-		cipher_file: The file encrypted by monolithic substitution
-
-	alphabets_count: Dictionary where {'key':'value'} refers to
-	                 {'letter':'no-of-occurences'}	
-
-
-	"""
-
-	alphabets_count = {'A':0, 'B':0, 'C':0, 'D':0, 'E':0,
-	                   'F':0, 'G':0, 'H':0, 'I':0, 'J':0,
-	                   'K':0, 'L':0, 'M':0, 'N':0, 'O':0,
-	                   'P':0, 'Q':0, 'R':0, 'S':0, 'T':0,
-	                   'U':0, 'V':0, 'W':0, 'X':0, 'Y':0,
-	                   'Z':0}
-
-	while True:
-		ch = cipher_file.read(1) #Reading file char by char
-		if not ch:
-			break
-		alphabets_count[ch]+= 1
-
-	return(alphabets_count)
-
-def count_n_graphs(cipher_file,length):
-	"""
-	Count the number of digraphs and trigraphs
+	Count the number of digraphs and trigraphs and single letters
 
 	params:
 		cipher_file: file with the cipher text
@@ -81,7 +54,6 @@ def count_n_graphs(cipher_file,length):
 	"""
 	pattern_count_dict = {}
 
-	text = cipher_file.readline()
 	file_length = len(text)
 	i = 0
 	j = length
@@ -98,7 +70,7 @@ def count_n_graphs(cipher_file,length):
 
 		pattern_count_dict.update({key:0})	
 
-		# Now find the number of times the patter occured
+		# Fzind the number of times the patter occured
 		no_key_occurences = len(re.findall(key, text))
 		pattern_count_dict[key] = no_key_occurences
 		i+=1
@@ -106,7 +78,7 @@ def count_n_graphs(cipher_file,length):
 
 	return(pattern_count_dict)
 
-def count_doubles(cipher_file):
+def count_doubles(text):
 	"""
 	Counts the occurence of the double letters
 	"""	
@@ -118,13 +90,103 @@ def count_doubles(cipher_file):
 	                      'UU':0, 'VV':0, 'WW':0, 'XX':0, 'YY':0,
 	                      'ZZ':0}
 
-	text = cipher_file.readline()
-
 	for key in double_letter_dict:
 		no_key_occurences = len(re.findall(key, text))
 		double_letter_dict[key] = no_key_occurences
 
-	return(double_letter_dict)	
+	return(double_letter_dict)
+
+def calculate_frequency(text,dictionary,num_char_in_key):
+	"""
+	Finds the frequency of each character.
+
+	num_char_key: The value can be either 1,2,3. 
+				  1 --> Single charcter
+				  2 --> Digraphs/Doubles
+				  3 --> Trigraphs
+	"""
+	text_len = len(text)
+	total_number = int(text_len/num_char_in_key)
+	freq_dict = dictionary
+
+	for key in freq_dict:
+		frequency = (freq_dict[key]/total_number)*100
+		freq_dict[key] = round(frequency,2) 
+
+	return freq_dict
+
+def print_cipher_alphabets(alphabets_dict):
+	sorted_list = sorted(alphabets_dict.items(),
+		          key = itemgetter(1),reverse=True)
+
+	dash = "-"
+	space = " "
+
+	print('*'*70)	
+	print( dash*12 + " Frequency of the letters in Cipher Text are "
+		   + dash*12)
+	print("LETTER" + space*5 + "Frequency")
+	for key,value in sorted_list:
+		print(space*3 + str(key) + space*10 
+			  + str(alphabets_dict[key]))
+	print('*'*70+'\n')
+
+def print_digraphs(digraphs_dict):
+	sorted_list = sorted(digraphs_dict.items(),
+		          key = itemgetter(1),reverse=True)
+
+	dash = "-"
+	space = " "
+	print("The most common digraphs in English languages is: \n")
+	print("   TH,HE,AN,IN,ER,ON,RE,ED,ND,HA,AT,EN \n")
+	print("The most common digraphs in the message are: \n")
+	print(dash*12 + " Frequency of Digraphs " + dash*12)
+	print("Pattern" + space*5 + "Frequency")
+
+	for key,value in sorted_list[:10]:
+		print(space*3 + str(key) + space*10 
+			  + str(digraphs_dict[key]))
+	print('*'*70+'\n')
+
+def print_doubles(doubles_dict):
+	sorted_list = sorted(doubles_dict.items(),
+		          key = itemgetter(1),reverse=True)
+
+	dash = "-"
+	space = " "
+	print("The most common doubles in English languages is: \n")
+	print("    SS,EE,TT,FF,LL,MM,OO \n")
+	print("The most common doubles in the message are: \n")
+	print(dash*12 + " Frequency of Doubles " + dash*12)
+	print("Pattern" + space*5 + "Frequency")
+
+	if sorted_list[0][1]:
+		for key,value in sorted_list[:10]:
+			print(space*3 + str(key) + space*10 
+				  + str(doubles_dict[key]))
+	else:
+		print("There are no double letters in the cipher text")		
+	print('*'*70+'\n')
+
+	
+def print_trigraphs(trigraphs_dict):
+	sorted_list = sorted(trigraphs_dict.items(),
+		          key = itemgetter(1),reverse=True)
+
+	dash = "-"
+	space = " "
+	print("The most common trigraphs in English languages is: \n")
+	print("    THE,AND,THA,ENT,ION,TIO,FOR,NDE,HAS,NCE,TIS,OFT,MEN \n")
+	print("The most common trigraphs in the message are: \n")
+	print(dash*12 + " Frequency of Trigraphs " + dash*12)
+	print("Pattern" + space*5 + "Frequency")
+
+	for key,value in sorted_list[:12]:
+		print(space*3 + str(key) + space*10 
+			  + str(trigraphs_dict[key]))
+	print('*'*70+'\n')
+	          		
+
 
 
 def main():
@@ -134,20 +196,32 @@ def main():
 	monolithic_subtitution(input_file, output_file)
 
 	cipher_file = open("cipher.txt","r")
-	cipher_alphabets_count = count_chars(cipher_file)
-	print(cipher_alphabets_count)
+	cipher_file_content = cipher_file.readline()
 
-	cipher_file = open("cipher.txt","r")
-	digraphs_count = count_n_graphs(cipher_file,2)
-	print(digraphs_count)
+	# Dictionary of occurences
 
-	cipher_file = open("cipher.txt","r")
-	trigraphs_count = count_n_graphs(cipher_file,3)
-	print(trigraphs_count)
+	cipher_alphabets_dict = count_occurences(cipher_file_content,1)
+	digraphs_dict = count_occurences(cipher_file_content,2)
+	trigraphs_dict = count_occurences(cipher_file_content,3)
+	doubles_dict = count_doubles(cipher_file_content)
 
-	doubles_count = count_doubles(cipher_file)
-	print(doubles_count)	
+	# Calculate the frequency
 
+	alphabets_freq =  calculate_frequency(cipher_file_content,
+		              cipher_alphabets_dict,1)
+	digraphs_freq  =  calculate_frequency(cipher_file_content,
+		              digraphs_dict,2)
+	doubles_freq   =  calculate_frequency(cipher_file_content,
+		              doubles_dict,2)
+	trigraphs_freq =  calculate_frequency(cipher_file_content,
+		              trigraphs_dict,3)
+
+	# Printing the frequencies
+
+	print_cipher_alphabets(alphabets_freq)
+	print_digraphs(digraphs_freq)
+	print_doubles(doubles_freq)
+	print_trigraphs(trigraphs_freq)
 
 	            
 if __name__ == '__main__':
