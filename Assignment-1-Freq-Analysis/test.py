@@ -185,8 +185,35 @@ def print_trigraphs(trigraphs_dict):
 		print(space*3 + str(key) + space*10 
 			  + str(trigraphs_dict[key]))
 	print('*'*70+'\n')
-	          		
+          		
+def substitution(dictionary,cipher_file,decrypt_file):
+	"""
+	Subsitutes the cipher text with the most occuring letters
+	of the english language. 
+	"""
+	ordered_list = sorted(dictionary.items(),
+		          key = itemgetter(1),reverse=True)
 
+	list1 = ['e','t','o','n','i','s','a','h','r','d','l',
+	         'c','u','m','f','w','g','y','p','b','v','k',
+	         'j','x','q','z']
+	dictionary1 = {}
+
+	for x in ordered_list:
+		dictionary1.update({x[0]:' '})
+
+	i = 0;
+	
+	for key in dictionary1:
+		dictionary1[key] = list1[i]
+		i+=1
+
+	print(dictionary1)
+	while True:
+		ch = cipher_file.read(1) #Reading file char by char
+		if not ch:
+			break
+		decrypt_file.write(dictionary1[ch].lower())				
 
 
 def main():
@@ -222,6 +249,11 @@ def main():
 	print_digraphs(digraphs_freq)
 	print_doubles(doubles_freq)
 	print_trigraphs(trigraphs_freq)
+
+	# Decrytpted text
+	decrypt_file = open("decrypt.txt","w")
+	cipher_file = open("cipher.txt","r")
+	substitution(alphabets_freq,cipher_file,decrypt_file)
 
 	            
 if __name__ == '__main__':
